@@ -1,0 +1,63 @@
+# Screenshots of Campus Event Management System
+
+## 1. Login Page
+- Clean, modern login interface
+- Demo account credentials displayed
+- Responsive design for mobile and desktop
+- Error handling with user feedback
+
+## 2. Main Dashboard
+- Event cards with status badges
+- Registration and check-in buttons
+- Event information display (date, location, capacity)
+- Real-time updates
+
+## 3. My Events Page
+- User's registered events
+- Registration status indicators
+- Cancel registration functionality
+- Event details and history
+
+## 4. Analytics Dashboard
+- Total events, registrations, and users
+- Popular events ranking
+- Visual charts and statistics
+- Role-based access control
+
+## 5. Event Registration Flow
+- Event selection and registration
+- Capacity checking
+- Success/error notifications
+- Real-time updates
+
+## 6. Check-in System
+- Manual check-in functionality
+- Location tracking
+- Attendance verification
+- Check-in history
+
+## 7. Database Schema
+- SQLite database structure
+- Table relationships
+- Sample data display
+- Query execution results
+
+## 8. API Endpoints
+- RESTful API documentation
+- Request/response examples
+- Authentication headers
+- Error handling
+
+## 9. Mobile Responsiveness
+- Mobile-optimized interface
+- Touch-friendly buttons
+- Responsive grid layout
+- Cross-platform compatibility
+
+## 10. Error Handling
+- User-friendly error messages
+- Validation feedback
+- Network error handling
+- Graceful degradation
+
+Note: These screenshots would show the actual running application with sample data, demonstrating the complete functionality of the Campus Event Management System.

@@ -1,0 +1,172 @@
+# Campus Event Management System - Design Document
+
+## 1. System Overview
+
+### Purpose
+A comprehensive web-based platform for managing campus events, student registrations, and event analytics.
+
+### Scope
+- Event creation and management
+- Student registration system
+- Event check-in functionality
+- Analytics and reporting
+- User role management
+
+## 2. Entity Relationship Diagram
+
+```
+Users (1) -----> (N) Events
+  |                    |
+  |                    |
+  v                    v
+Registrations (N) <-> (N) Events
+  |
+  v
+CheckIns (N) <-> (N) Events
+
+EventCategories (1) -----> (N) Events
+```
+
+## 3. Database Schema
+
+### Users Table
+- id (Primary Key)
+- name (VARCHAR)
+- email (VARCHAR, Unique)
+- password (VARCHAR, Hashed)
+- role (ENUM: ADMIN, STAFF, STUDENT)
+- student_id (VARCHAR, Optional)
+- department (VARCHAR, Optional)
+- year (INTEGER, Optional)
+- phone (VARCHAR, Optional)
+- created_at (DATETIME)
+
+### Events Table
+- id (Primary Key)
+- title (VARCHAR)
+- description (TEXT)
+- event_type (ENUM: HACKATHON, WORKSHOP, TECH_TALK, etc.)
+- start_date (DATETIME)
+- end_date (DATETIME)
+- location (VARCHAR)
+- capacity (INTEGER)
+- status (ENUM: UPCOMING, ONGOING, COMPLETED, CANCELLED)
+- requirements (TEXT, Optional)
+- creator_id (Foreign Key -> Users.id)
+- category_id (Foreign Key -> EventCategories.id)
+- created_at (DATETIME)
+
+### Registrations Table
+- id (Primary Key)
+- user_id (Foreign Key -> Users.id)
+- event_id (Foreign Key -> Events.id)
+- status (ENUM: CONFIRMED, PENDING, CANCELLED, WAITLISTED)
+- registered_at (DATETIME)
+- metadata (TEXT, JSON)
+
+### CheckIns Table
+- id (Primary Key)
+- user_id (Foreign Key -> Users.id)
+- event_id (Foreign Key -> Events.id)
+- check_in_time (DATETIME)
+- location (VARCHAR)
+- method (ENUM: MANUAL, QR_CODE, GPS)
+- metadata (TEXT, JSON)
+
+### EventCategories Table
+- id (Primary Key)
+- name (VARCHAR)
+- description (TEXT)
+- created_at (DATETIME)
+
+## 4. API Endpoints
+
+### Authentication
+- POST /login - User login
+- POST /register - User registration
+- GET /logout - User logout
+
+### Events
+- GET /api/events - List all events
+- GET /api/events/<id> - Get specific event
+- POST /api/events - Create new event (Admin/Staff only)
+- PUT /api/events/<id> - Update event (Admin/Staff only)
+- DELETE /api/events/<id> - Delete event (Admin only)
+
+### Registrations
+- POST /api/registrations/<event_id> - Register for event
+- DELETE /api/registrations/<event_id> - Cancel registration
+- GET /api/my-registrations - Get user's registrations
+
+### Check-ins
+- POST /api/checkin/<event_id> - Check in to event
+- GET /api/checkins/<event_id> - Get event check-ins (Admin/Staff)
+
+### Analytics
+- GET /api/analytics - Get system analytics (Admin/Staff only)
+- GET /api/analytics/events - Get event-specific analytics
+- GET /api/analytics/users - Get user analytics
+
+## 5. User Workflows
+
+### Student Workflow
+1. Login to system
+2. Browse available events
+3. Register for events of interest
+4. View registered events
+5. Check in to events on event day
+6. View event history
+
+### Staff Workflow
+1. Login to system
+2. Create and manage events
+3. View event registrations
+4. Monitor check-ins
+5. Generate reports
+6. View analytics dashboard
+
+### Admin Workflow
+1. Login to system
+2. Manage all events and users
+3. View comprehensive analytics
+4. Generate detailed reports
+5. System administration tasks
+
+## 6. Security Considerations
+
+- Password hashing using Werkzeug
+- Session-based authentication
+- Role-based access control
+- Input validation and sanitization
+- SQL injection prevention
+- XSS protection
+
+## 7. Assumptions
+
+- Single campus environment
+- Events are primarily in-person
+- Users have reliable internet access
+- Event capacity is fixed per event
+- Check-ins happen on event day
+- No payment processing required
+- Basic mobile device compatibility
+
+## 8. Technical Stack
+
+- Backend: Flask (Python)
+- Database: SQLite
+- Frontend: HTML, CSS, JavaScript
+- Authentication: Session-based
+- Styling: Custom CSS
+- Deployment: Local development server
+
+## 9. Future Enhancements
+
+- Email notifications
+- Calendar integration
+- Mobile app development
+- Advanced analytics
+- Payment integration
+- Multi-campus support
+- Real-time updates
+- QR code generation

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Event Management System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: white; border-radius: 15px; padding: 30px; margin-bottom: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .header h1 { color: #1976d2; font-size: 2.5em; margin-bottom: 10px; }
+        .nav { background: white; border-radius: 15px; padding: 20px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nav-btn { padding: 10px 20px; background: #f5f5f5; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .nav-btn.active { background: #1976d2; color: white; }
+        .content-section { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-height: 400px; }
+        .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .event-card { border: 2px solid #e0e0e0; border-radius: 10px; padding: 20px; transition: all 0.3s; cursor: pointer; }
+        .event-card:hover { border-color: #1976d2; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .event-title { font-size: 1.3em; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .event-description { color: #666; margin-bottom: 15px; line-height: 1.5; }
+        .event-info { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+        .event-info span { color: #666; font-size: 0.9em; }
+        .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
+        .btn-primary { background: #1976d2; color: white; }
+        .btn-success { background: #4caf50; color: white; }
+        .btn-danger { background: #f44336; color: white; }
+        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+        .status-upcoming { background: #e3f2fd; color: #1976d2; }
+        .status-ongoing { background: #e8f5e8; color: #4caf50; }
+        .status-completed { background: #f5f5f5; color: #666; }
+        .login-form { max-width: 400px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        .form-group input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
+        .form-group input:focus { outline: none; border-color: #1976d2; }
+        .btn-full { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; }
+        .hidden { display: none; }
+        .error { background: #ffebee; color: #c62828; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .success { background: #e8f5e8; color: #2e7d32; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Campus Event Management System</h1>
+            <p>Discover, Register, and Manage Campus Events</p>
+        </div>
+
+        <!-- Login Section -->
+        <div id="loginSection" class="login-form">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Login</button>
+            </form>
+            <div style="margin-top: 20px; text-align: center;">
+                <p><strong>Demo Accounts:</strong></p>
+                <p>Admin: admin@campus.edu / admin123</p>
+                <p>Staff: staff@campus.edu / staff123</p>
+                <p>Student: student1@campus.edu / student123</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="hidden">
+            <div class="nav">
+                <div class="nav-buttons">
+                    <button class="nav-btn active" onclick="showSection('events')">Events</button>
+                    <button class="nav-btn" onclick="showSection('myEvents')">My Events</button>
+                    <button class="nav-btn" onclick="showSection('analytics')">Analytics</button>
+                    <button class="nav-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <div id="eventsSection" class="content-section">
+                <h2>Available Events</h2>
+                <div id="eventsList" class="events-grid"></div>
+            </div>
+
+            <div id="myEventsSection" class="content-section hidden">
+                <h2>My Registered Events</h2>
+                <div id="myEventsList" class="events-grid"></div>
+            </div>
+
+            <div id="analyticsSection" class="content-section hidden">
+                <h2>Analytics Dashboard</h2>
+                <div id="analyticsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            loadEvents();
+        });
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    currentUser = data.user;
+                    showMainContent();
+                    loadEvents();
+                } else {
+                    showError('Login failed: ' + data.error);
+                }
+            } catch (error) {
+                showError('Login failed: ' + error.message);
+            }
+        }
+
+        function showMainContent() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+        }
+
+        function logout() {
+            window.location.href = '/logout';
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.content-section').forEach(section => section.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(sectionName + 'Section').classList.remove('hidden');
+            event.target.classList.add('active');
+
+            if (sectionName === 'events') loadEvents();
+            else if (sectionName === 'myEvents') loadMyEvents();
+            else if (sectionName === 'analytics') loadAnalytics();
+        }
+
+        async function loadEvents() {
+            try {
+                const response = await fetch('/api/events');
+                const data = await response.json();
+                displayEvents(data.events || [], 'eventsList');
+            } catch (error) {
+                showError('Failed to load events: ' + error.message);
+            }
+        }
+
+        async function loadMyEvents() {
+            try {
+                const response = await fetch('/api/my-registrations');
+                const data = await response.json();
+                displayMyEvents(data.registrations || []);
+            } catch (error) {
+                showError('Failed to load your events: ' + error.message);
+            }
+        }
+
+        async function loadAnalytics() {
+            try {
+                const response = await fetch('/api/analytics');
+                const data = await response.json();
+                displayAnalytics(data);
+            } catch (error) {
+                showError('Failed to load analytics: ' + error.message);
+            }
+        }
+
+        function displayEvents(events, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = events.map(event => `
+                <div class="event-card">
+                    <div class="status-badge status-${event.status.toLowerCase()}">${event.status}</div>
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-description">${event.description || 'No description'}</div>
+                    <div class="event-info">
+                        <span>📅 ${new Date(event.start_date).toLocaleDateString()}</span>
+                        <span>📍 ${event.location}</span>
+                        <span>👥 ${event.registrations_count}/${event.capacity} registered</span>
+                        <span>🏷️ ${event.event_type.replace('_', ' ')}</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-success" onclick="registerForEvent(${event.id})">Register</button>
+                        <button class="btn btn-primary" onclick="checkIn(${event.id})">Check In</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayMyEvents(registrations) {
+            const container = document.getElementById('myEventsList');
+            container.innerHTML = registrations.map(reg => `
+                <div class="event-card">
+                    <div class="status-badge status-${reg.event.status.toLowerCase()}">${reg.event.status}</div>
+                    <div class="event-title">${reg.event.title}</div>
+                    <div class="event-description">${reg.event.description || 'No description'}</div>
+                    <div class="event-info">
+                        <span>📅 ${new Date(reg.event.start_date).toLocaleDateString()}</span>
+                        <span>📍 ${reg.event.location}</span>
+                        <span>✅ Status: ${reg.status}</span>
+                    </div>
+                    <button class="btn btn-danger" onclick="cancelRegistration(${reg.event.id})">Cancel</button>
+                </div>
+            `).join('');
+        }
+
+        function displayAnalytics(data) {
+            const container = document.getElementById('analyticsContent');
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3>${data.events.total}</h3>
+                        <p>Total Events</p>
+                    </div>
+                    <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3>${data.registrations.total}</h3>
+                        <p>Total Registrations</p>
+                    </div>
+                    <div style="background: #fff3e0; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3>${data.users.total}</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div style="background: #f5f5f5; padding: 20px; border-radius: 10px;">
+                    <h3>Popular Events</h3>
+                    ${data.popular_events.map(event => `
+                        <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd;">
+                            <span>${event.title}</span>
+                            <span>${event.registrations} registrations</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        async function registerForEvent(eventId) {
+            try {
+                const response = await fetch(`/api/registrations/${eventId}`, { method: 'POST' });
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Successfully registered!');
+                    loadEvents();
+                } else {
+                    showError('Registration failed: ' + data.error);
+                }
+            } catch (error) {
+                showError('Registration failed: ' + error.message);
+            }
+        }
+
+        async function cancelRegistration(eventId) {
+            if (!confirm('Cancel registration?')) return;
+            try {
+                const response = await fetch(`/api/registrations/${eventId}`, { method: 'DELETE' });
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Registration cancelled!');
+                    loadMyEvents();
+                } else {
+                    showError('Cancellation failed: ' + data.error);
+                }
+            } catch (error) {
+                showError('Cancellation failed: ' + error.message);
+            }
+        }
+
+        async function checkIn(eventId) {
+            try {
+                const response = await fetch(`/api/checkin/${eventId}`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ location: 'Main Campus', method: 'MANUAL' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Successfully checked in!');
+                } else {
+                    showError('Check-in failed: ' + data.error);
+                }
+            } catch (error) {
+                showError('Check-in failed: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            document.querySelector('.container').insertBefore(errorDiv, document.querySelector('.container').firstChild);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.textContent = message;
+            document.querySelector('.container').insertBefore(successDiv, document.querySelector('.container').firstChild);
+            setTimeout(() => successDiv.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
